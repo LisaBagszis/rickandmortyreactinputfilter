@@ -19,5 +19,3 @@ export default function ActionBar(props : ActionBarProps) {
     </div>)
 }
 
-const filterFunction = (characters : Character[]) => {
-    characters.filter((character) =>{} }

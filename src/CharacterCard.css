@@ -1,0 +1,24 @@
+
+.character-card {
+    padding: 24px;
+    width: 300px;
+    text-align: center;
+    color: white;
+    background-color: #3c3e44;
+    border: 1px solid #333;
+    border-radius: 12px;
+
+}
+
+.character-card__name {
+    margin-bottom: 12px;
+
+}
+
+.character-card__image {
+    width: 100%;
+}
+
+.character-card__origin {
+    font-style: italic;
+}
