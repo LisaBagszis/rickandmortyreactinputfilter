@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import './App.css';
 
@@ -9,6 +9,8 @@ import {Character} from "./Character";
 import axios from "axios";
 import * as https from "https";
 import './Header.css';
+import {Simulate} from "react-dom/test-utils";
+import error = Simulate.error;
 
 
 function App() {
@@ -17,34 +19,53 @@ function App() {
     const [allCharacters, setCharacters] = useState<Character[]>([])
 
 
-    const [text, setText] = useState("")
+    const [searchText, setSearchText] = useState("")
 
-    const filteredCharacters = allCharacters.filter((character) => character.name.toLowerCase().includes(text.toLowerCase()))
+    const [page, setPages] = useState(1)
+
+    function onButtonClick() {
+        setPages(page + 1)
+        console.log("click", page)
+    }
+
+    function onButtonClickToLow() {
+        setPages(page - 1)
+        console.log("click", page)
+    }
+
+
+    useEffect(() => {
+        loadPage(page);
+    }, [page])
+
+    const filteredCharacters = allCharacters.filter((character) => character.name.toLowerCase().includes(searchText.toLowerCase()))
 
     function onChange(value: string) {
-        setText(value)
+        setSearchText(value)
     }
 
-    function loadAllCharacters() {
-        axios.get("https://rickandmortyapi.com/api/character")
-            .then((response) => {
-            console.log(response.data.results)
-                setCharacters(response.data.results)
-        })
-
+    async function loadPage(page: number) {
+        try {
+            const response = await axios.get(`https://rickandmortyapi.com/api/character?page=${page}`);
+            setCharacters(response.data.results);
+        } catch (error) {
+            console.error(`Fehler beim Laden der Seite ${page}:`, error);
+        }
     }
 
-    loadAllCharacters();
+        return (
+            <div className="App">
+                <Header/>
+                <ActionBar text={searchText} onTextChange={onChange}/>
+                {filteredCharacters.length > 0 && <CharacterGallery characters={filteredCharacters}/>}
+                {filteredCharacters.length === 0 && <p className="noCharacterFound"> No Character Found </p>}
+                <p className="pageNumber">{page}</p>
+                <button onClick={onButtonClickToLow}>Seite zurück</button>
+                <button onClick={onButtonClick}>nächste Seite</button>
 
-    return (
-        <div className="App">
-            <Header/>
-            <ActionBar text={text} onTextChange={onChange}/>
-            {filteredCharacters.length > 0 && <CharacterGallery characters={filteredCharacters}/>}
-            {filteredCharacters.length === 0 && <p className="noCharacterFound"> No Character Found </p>}
 
-        </div>
-    );
-}
+            </div>
+        );
+    }
 
-export default App;
+    export default App;
