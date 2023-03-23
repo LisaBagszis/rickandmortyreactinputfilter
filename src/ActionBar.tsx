@@ -1,4 +1,5 @@
 import {ChangeEvent} from "react";
+import {Character} from "./Character";
 
 type ActionBarProps = {
     text: string,
@@ -17,3 +18,6 @@ export default function ActionBar(props : ActionBarProps) {
         <input value={props.text} onChange={onTextChange}/>
     </div>)
 }
+
+const filterFunction = (characters : Character[]) => {
+    characters.filter((character) =>{} }
